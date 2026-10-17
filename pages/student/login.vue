@@ -27,6 +27,7 @@
 // app.vue đã có <v-app> và snackbar toàn cục nên trang này chỉ cần layout: false như login.vue
 //definePageMeta({ layout: false })
 definePageMeta({
+  layout: false,
   path: '/login'
 })
 

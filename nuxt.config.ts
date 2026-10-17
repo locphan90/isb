@@ -1,5 +1,8 @@
+
 import vuetify, { transformAssetUrls } from 'vite-plugin-vuetify'
 import { ui } from './config/ui.js'
+
+const appMode = process.env.NUXT_APP_MODE || 'staff'
 
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
@@ -16,11 +19,40 @@ export default defineNuxtConfig({
     },
   ],
 
-  // pathPrefix: false -> tên thẻ component KHÔNG bị đổi theo tên thư mục
-  // con (mặc định Nuxt sẽ ghép tiền tố theo path, vd components/Foo/Bar.vue
-  // -> <FooBar>). Tắt đi để được tự do gom component theo cụm tính năng
-  // (vd components/StudentProfile/) mà không phải đổi tên thẻ đang dùng
-  // khắp nơi trong template.
+  // Lọc route theo website cần build
+  hooks: {
+    'pages:extend'(pages) {
+      const normalize = (file = '') =>
+        `/${file.replace(/\\/g, '/')}`
+
+      const isStudentPage = (file = '') =>
+        normalize(file).includes('/pages/student/')
+
+      const isStaffLogin = (file = '') =>
+        normalize(file).endsWith('/pages/login.vue')
+
+      for (let i = pages.length - 1; i >= 0; i--) {
+        const file = pages[i].file || ''
+
+        if (appMode === 'student') {
+          // Website sinh viên:
+          // Giữ tất cả route thuộc pages/student/
+          // Loại route của website nhân viên.
+          if (!isStudentPage(file) || isStaffLogin(file)) {
+            pages.splice(i, 1)
+          }
+        } else {
+          // Website nhân viên:
+          // Loại toàn bộ route thuộc pages/student/
+          if (isStudentPage(file)) {
+            pages.splice(i, 1)
+          }
+        }
+      }
+    },
+  },
+
+  // Giữ nguyên cấu hình components
   components: [
     { path: '~/components', pathPrefix: false },
   ],
@@ -46,7 +78,11 @@ export default defineNuxtConfig({
     head: {
       link: [
         { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
-        { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
+        {
+          rel: 'preconnect',
+          href: 'https://fonts.gstatic.com',
+          crossorigin: '',
+        },
         {
           rel: 'stylesheet',
           href: `https://fonts.googleapis.com/css2?family=${ui.font.googleFont}&display=swap`,
@@ -71,10 +107,14 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     geminiApiKey: process.env.GEMINI_API_KEY,
-    supabaseServiceRoleKey: process.env.NUXT_SUPABASE_SERVICE_ROLE_KEY || '',
+    supabaseServiceRoleKey:
+      process.env.NUXT_SUPABASE_SERVICE_ROLE_KEY || '',
+
     public: {
-      supabaseUrl: process.env.NUXT_PUBLIC_SUPABASE_URL || '',
-      supabaseKey: process.env.NUXT_PUBLIC_SUPABASE_KEY || '',
+      supabaseUrl:
+        process.env.NUXT_PUBLIC_SUPABASE_URL || '',
+      supabaseKey:
+        process.env.NUXT_PUBLIC_SUPABASE_KEY || '',
     },
   },
 })

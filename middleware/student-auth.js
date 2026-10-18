@@ -3,6 +3,7 @@
 export default defineNuxtRouteMiddleware(() => {
   const { loggedIn, user } = useUserSession()
   if (!loggedIn.value || user.value?.role !== 'student') {
-    return navigateTo('/login')
+    // Đường dẫn trang đăng nhập khai ở runtimeConfig.public.studentLoginPath (mặc định /login)
+    return navigateTo(useRuntimeConfig().public.studentLoginPath || '/login')
   }
 })

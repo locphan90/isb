@@ -8,6 +8,8 @@ import {
 export const useStudentSelfProfile = () => {
   const snackbar = useSnackbarStore()
   const { clear } = useUserSession()
+  // Đọc cấu hình ngay lúc khởi tạo (sau các lệnh await thì không còn ngữ cảnh Nuxt để gọi useRuntimeConfig)
+  const loginPath = useRuntimeConfig().public.studentLoginPath || '/login'
   const notify = (message, color = 'success') => snackbar.trigger({ message, color })
 
   const loading = ref(false)
@@ -27,7 +29,7 @@ export const useStudentSelfProfile = () => {
 
   const signOut = async () => {
     await clear()
-    await navigateTo('/student/login')
+    await navigateTo(loginPath)
   }
 
   const load = async () => {

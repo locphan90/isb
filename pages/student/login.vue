@@ -1,3 +1,7 @@
+<!--
+  Trang đăng nhập của site sinh viên.
+  Đặt ở pages/login.vue của APP SINH VIÊN (đường dẫn /login). Đừng chép vào app admin: sẽ ghi đè trang đăng nhập admin.
+-->
 <template>
   <div class="login-wrapper">
     <div class="login-container">
@@ -25,15 +29,15 @@
 
 <script setup>
 // app.vue đã có <v-app> và snackbar toàn cục nên trang này chỉ cần layout: false như login.vue
-//definePageMeta({ layout: false })
-definePageMeta({
-  layout: false,
+definePageMeta({ 
+  layout: false ,
   path: '/login'
 })
 
 const route = useRoute()
 const router = useRouter()
 const { loggedIn, user } = useUserSession()
+const homePath = useRuntimeConfig().public.studentHomePath || '/profile'
 const snackbar = useSnackbarStore()
 
 const ERRORS = {
@@ -53,7 +57,7 @@ const ERRORS = {
 onMounted(() => {
   // Đã là phiên sinh viên thì vào thẳng trang profile
   if (loggedIn.value && user.value?.role === 'student') {
-    navigateTo('/student/profile')
+    navigateTo(homePath)
     return
   }
 

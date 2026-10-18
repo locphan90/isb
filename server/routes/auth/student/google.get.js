@@ -6,21 +6,22 @@ export default defineOAuthGoogleEventHandler({
     scope: ['email', 'profile'],
   },
   async onSuccess(event, { user }) {
+    const { login, home } = studentPaths(event)
     const email = user.email?.trim()
-    if (!email) return sendRedirect(event, '/student/login?error=no_email')
-    if (user.email_verified === false) return sendRedirect(event, '/student/login?error=no_email')
+    if (!email) return sendRedirect(event, `${login}?error=no_email`)
+    if (user.email_verified === false) return sendRedirect(event, `${login}?error=no_email`)
 
     try {
       const { data, error } = await useSupabaseAdmin(event).rpc('get_student_self', { p_email: email })
       if (error) {
         if ((error.message || '').includes('EMAIL_DUPLICATED')) {
-          return sendRedirect(event, '/student/login?error=email_duplicated')
+          return sendRedirect(event, `${login}?error=email_duplicated`)
         }
         throw error
       }
       if (!data) {
         console.warn(`[Student Auth] Email ${email} not found in tbl_student.`)
-        return sendRedirect(event, '/student/login?error=not_registered')
+        return sendRedirect(event, `${login}?error=not_registered`)
       }
 
       await setUserSession(event, {
@@ -32,14 +33,14 @@ export default defineOAuthGoogleEventHandler({
           mssv: data.mssv,
         },
       })
-      return sendRedirect(event, '/student/profile')
+      return sendRedirect(event, home)
     } catch (err) {
       console.error('[Student Auth] Lookup failed:', err?.message || err)
-      return sendRedirect(event, '/student/login?error=db_error')
+      return sendRedirect(event, `${login}?error=db_error`)
     }
   },
   onError(event, error) {
     console.error('[Student Auth] Google OAuth callback error:', error)
-    return sendRedirect(event, '/student/login?error=auth_failed')
+    return sendRedirect(event, `${studentPaths(event).login}?error=auth_failed`)
   },
 })

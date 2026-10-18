@@ -1,5 +1,5 @@
 <!--
-  pages/student/profile.vue
+  Trang chính của site sinh viên. Đặt ở pages/profile.vue của APP SINH VIÊN (đường dẫn /profile).
   Trang sinh viên sau khi đăng nhập Google, gồm 3 phần (style theo StudentProfileDetail.vue):
     1. Thông tin chỉ xem  2. Import tài liệu (5 nút, chưa có chức năng)  3. Thông tin được phép sửa
   Trường nào hiện ở phần 1 / phần 3 do admin cấu hình ở System > Student Self-Edit.

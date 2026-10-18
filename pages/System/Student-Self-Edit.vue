@@ -52,6 +52,7 @@ onMounted(load)
 
     <h3 class="section-title">General profile</h3>
     <v-table density="compact" class="field-table">
+      <colgroup><col class="col-field"><col></colgroup>
       <thead>
         <tr><th>Field</th><th>Student access</th></tr>
       </thead>
@@ -89,6 +90,7 @@ onMounted(load)
       Students can only view the fields you show; they can never edit them.
     </p>
     <v-table density="compact" class="field-table">
+      <colgroup><col class="col-field"><col></colgroup>
       <thead>
         <tr><th>Field</th><th>Student access</th></tr>
       </thead>
@@ -140,6 +142,11 @@ onMounted(load)
   margin: 20px 0 8px;
 }
 .field-table { width: 100%; }
+/* Hai bảng dùng chung độ rộng cột: table-layout fixed + cột đầu cố định,
+   nên cột Student access của bảng dưới lùi vào thẳng hàng với bảng trên
+   (trước đây độ rộng cột tự co theo nội dung nên 2 bảng lệch nhau) */
+.field-table :deep(table) { table-layout: fixed !important; width: 100% !important; }
+.col-field { width: 28%; }
 .f-label { font-size: 0.92rem; color: #1e293b; }
 .f-key { font-size: 0.75rem; color: #94a3b8; }
 .lock-note { margin-left: 12px; font-size: 0.75rem; color: #94a3b8; }

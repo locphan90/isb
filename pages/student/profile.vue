@@ -8,7 +8,7 @@
 import { STUDENT_IMPORT_ITEMS } from '~/data/schemas/studentSelfEdit'
 import { displayName, formatValue, selectItems } from '~/data/transformers/studentSelfEdit'
 
-definePageMeta({ layout: 'student', middleware: 'student-auth' })
+definePageMeta({ layout: 'student', path: '/profile', middleware: 'student-auth' })
 
 const {
   loading, saving, notRegistered, student, form, errors, fields, groupBlocks, hasChanges, notify, load, submit, signOut,
